@@ -35,8 +35,9 @@ def draw_bar_plot():
     avg = df_bar.groupby(['year', 'month'])['value'].mean().round().unstack().fillna(0)
 
     # Draw bar plot
-    avg.plot(kind='bar', stacked=False, xlabel="Years", ylabel="Average Page Views", title="Daily freeCodeCamp Forum Page Views 5/2016-12/2019")
-    fig = avg.plot(kind='bar', stacked=False, xlabel="Years", ylabel="Average Page Views", title="Daily freeCodeCamp Forum Page Views 5/2016-12/2019").figure
+    ax = avg.plot(kind='bar', stacked=False, xlabel="Years", ylabel="Average Page Views", title="Daily freeCodeCamp Forum Page Views 5/2016-12/2019")
+    ax.legend(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], title = 'Months')
+    fig = ax.figure
 
 
     # Save image and return fig (don't change this part)
@@ -47,11 +48,20 @@ def draw_box_plot():
     # Prepare data for box plots (this part is done!)
     df_box = df.copy()
     df_box.reset_index(inplace=True)
-    df_box['year'] = [d.year for d in df_box.date]
-    df_box['month'] = [d.strftime('%b') for d in df_box.date]
+    df_box['Year'] = [d.year for d in df_box.date]
+    df_box['Month'] = [d.strftime('%b') for d in df_box.date]
 
     # Draw box plots (using Seaborn)
-    sns.boxplot
+    fig, axes = plt.subplots(1, 2)
+    
+    order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+    axes[0].set_title("Year-wise Box Plot (Trend)")
+    axes[0].set_ylabel("Page Views")
+    axes[1].set_title("Month-wise Box Plot (Seasonality)")
+
+    sns.boxplot(data=df_box, x='Year', y='value', ax=axes[0]).set(ylabel='Page Views')
+    sns.boxplot(data=df_box, x='Month', y='value', order=order, ax=axes[1]).set(ylabel='Page Views')
 
 
 
